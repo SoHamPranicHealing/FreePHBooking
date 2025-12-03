@@ -38,13 +38,13 @@
           const [showAdmin, setShowAdmin] = useState(false);
           const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
           const [selectedDate, setSelectedDate] = useState(''); // Date selected by visitor
-          const [availableDates, setAvailableDates] = useState(['15/01/2025']); // Multiple dates
+          const [availableDates, setAvailableDates] = useState(['22/01/2025']); // Multiple dates
           const [dateTimeSlots, setDateTimeSlots] = useState({
-            '15/01/2025': {'09:00': 3, '09:30': 3, '10:00': 3, '14:00': 2, '14:30': 2}
+            '22/01/2025': {'09:00': 3, '09:30': 3, '10:00': 3, '14:00': 2, '14:30': 2}
           }); // Time slots per date
           const [newSlotTime, setNewSlotTime] = useState('');
           const [newDate, setNewDate] = useState('');
-          const [adminSelectedDate, setAdminSelectedDate] = useState('15/01/2025'); // Date admin is editing
+          const [adminSelectedDate, setAdminSelectedDate] = useState('22/01/2025'); // Date admin is editing
           const [gdprText, setGdprText] = useState('');
           const [settingsLoaded, setSettingsLoaded] = useState(false);
           
@@ -93,10 +93,10 @@
           const loadSettings = async () => {
             if (GOOGLE_SHEETS_URL === "YOUR_WEB_APP_URL_HERE") {
               // Set defaults if no URL configured
-              setAvailableDates(['15/01/2025']);
-              setSelectedDate('15/01/2025');
-              setAdminSelectedDate('15/01/2025');
-              setDateTimeSlots({'15/01/2025': {'09:00': 3, '09:30': 3, '10:00': 3, '14:00': 2, '14:30': 2}});
+              setAvailableDates(['22/01/2025']);
+              setSelectedDate('22/01/2025');
+              setAdminSelectedDate('22/01/2025');
+              setDateTimeSlots({'22/01/2025': {'09:00': 3, '09:30': 3, '10:00': 3, '14:00': 2, '14:30': 2}});
               setGdprText('Αποδέχομαι τους όρους GDPR');
               setSettingsLoaded(true);
               return;
@@ -130,20 +130,20 @@
               } else {
                 // No settings in sheet, use defaults
                 console.log('No settings in sheet, using defaults');
-                setAvailableDates(['15/01/2025']);
-                setSelectedDate('15/01/2025');
-                setAdminSelectedDate('15/01/2025');
-                setDateTimeSlots({'15/01/2025': {'09:00': 3, '09:30': 3, '10:00': 3, '14:00': 2, '14:30': 2}});
+                setAvailableDates(['22/01/2025']);
+                setSelectedDate('22/01/2025');
+                setAdminSelectedDate('22/01/2025');
+                setDateTimeSlots({'22/01/2025': {'09:00': 3, '09:30': 3, '10:00': 3, '14:00': 2, '14:30': 2}});
                 setGdprText('Αποδέχομαι τους όρους GDPR');
               }
               setSettingsLoaded(true);
             } catch (error) {
               console.error('Error loading settings:', error);
               // Use defaults on error
-              setAvailableDates(['15/01/2025']);
-              setSelectedDate('15/01/2025');
-              setAdminSelectedDate('15/01/2025');
-              setDateTimeSlots({'15/01/2025': {'09:00': 3, '09:30': 3, '10:00': 3, '14:00': 2, '14:30': 2}});
+              setAvailableDates(['22/01/2025']);
+              setSelectedDate('22/01/2025');
+              setAdminSelectedDate('22/01/2025');
+              setDateTimeSlots({'22/01/2025': {'09:00': 3, '09:30': 3, '10:00': 3, '14:00': 2, '14:30': 2}});
               setGdprText('Δηλώνω την σαφή και ανεπιφύλακτη συγκατάθεση μου στην Ειρήνη Τουρλεντέ του Παναγιώτη (So Ham - Yoga & Pranic Healing) για τη συλλογή, τήρηση κι επεξεργασία των ανωτέρω δεδομένων μου, για την προς εμένα αποστολή ενημερωτικού mail με επιλεγμένες εκδηλώσεις και διδακτικά σεμινάρια του. Δηλώνω, επίσης, ότι ενημερώθηκα για την ύπαρξη δικαιώματος ανάκλησης της ως άνω χορηγηθείσας συγκατάθεσής μου ή διόρθωσης αυτών με την αποστολή αντίστοιχου mail στην ηλεκτρονική διεύθυνση sohamgreece@gmail.com Τα ως άνω δεδομένα θα διατηρηθούν μέχρι την ρητή ανάκληση της συγκατάθεσης.Υπάρχει δικαίωμα υποβολής καταγγελίας στην αρμόδια εποπτική αρχή. Υπεύθυνος επεξεργασίας: Ειρήνη Τουρλεντέ του Παναγιώτη (So Ham - Yoga & Pranic Healing).');
               setSettingsLoaded(true);
             }
