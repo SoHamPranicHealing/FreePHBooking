@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Κλείστε μία δωρεάν δοκιμαστική θεραπεία Pranic Healing</title>
+    <title>Κλείστε μία δωρεάν θεραπεία Pranic Healing</title>
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -37,14 +37,9 @@
           const [reservations, setReservations] = useState([]);
           const [showAdmin, setShowAdmin] = useState(false);
           const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
-          const [selectedDate, setSelectedDate] = useState(''); // Date selected by visitor
-          const [availableDates, setAvailableDates] = useState(['22/01/2025']); // Multiple dates
-          const [dateTimeSlots, setDateTimeSlots] = useState({
-            '22/01/2025': {'09:00': 3, '09:30': 3, '10:00': 3, '14:00': 2, '14:30': 2}
-          }); // Time slots per date
+          const [adminDate, setAdminDate] = useState('');
+          const [timeSlots, setTimeSlots] = useState({});
           const [newSlotTime, setNewSlotTime] = useState('');
-          const [newDate, setNewDate] = useState('');
-          const [adminSelectedDate, setAdminSelectedDate] = useState('22/01/2025'); // Date admin is editing
           const [gdprText, setGdprText] = useState('');
           const [settingsLoaded, setSettingsLoaded] = useState(false);
           
@@ -93,11 +88,9 @@
           const loadSettings = async () => {
             if (GOOGLE_SHEETS_URL === "YOUR_WEB_APP_URL_HERE") {
               // Set defaults if no URL configured
-              setAvailableDates(['22/01/2025']);
-              setSelectedDate('22/01/2025');
-              setAdminSelectedDate('22/01/2025');
-              setDateTimeSlots({'22/01/2025': {'09:00': 3, '09:30': 3, '10:00': 3, '14:00': 2, '14:30': 2}});
-              setGdprText('Αποδέχομαι τους όρους GDPR');
+              setAdminDate('15/01/2025'); // FIXED DATE
+              setTimeSlots({'09:00': 2, '10:00': 2, '11:00': 2, '12:00': 2, '13:00': 2, '14:00': 2, '15:00': 2, '16:00': 1, '17:00': 1, '18:00': 1, '19:00': 1, '20:00': 2, '21:00': 2});
+              setGdprText('Δηλώνω την σαφή και ανεπιφύλακτη συγκατάθεση μου στην Ειρήνη Τουρλεντέ του Παναγιώτη (So Ham - Yoga & Pranic Healing) για τη συλλογή, τήρηση κι επεξεργασία των ανωτέρω δεδομένων μου, για την προς εμένα αποστολή ενημερωτικού mail με επιλεγμένες εκδηλώσεις και διδακτικά σεμινάρια του. Δηλώνω, επίσης, ότι ενημερώθηκα για την ύπαρξη δικαιώματος ανάκλησης της ως άνω χορηγηθείσας συγκατάθεσής μου ή διόρθωσης αυτών με την αποστολή αντίστοιχου mail στην ηλεκτρονική διεύθυνση sohamgreece@gmail.com Τα ως άνω δεδομένα θα διατηρηθούν μέχρι την ρητή ανάκληση της συγκατάθεσης.Υπάρχει δικαίωμα υποβολής καταγγελίας στην αρμόδια εποπτική αρχή. Υπεύθυνος επεξεργασίας: Ειρήνη Τουρλεντέ του Παναγιώτη (So Ham - Yoga & Pranic Healing).');
               setSettingsLoaded(true);
               return;
             }
@@ -110,18 +103,12 @@
               
               // Only update if we received valid data
               if (data && Object.keys(data).length > 0) {
-                if (data.availableDates) {
-                  console.log('Setting availableDates to:', data.availableDates);
-                  setAvailableDates(data.availableDates);
-                  if (data.availableDates.length > 0) {
-                    setSelectedDate(data.availableDates[0]);
-                    setAdminSelectedDate(data.availableDates[0]);
-                  }
-                }
+                // ALWAYS USE FIXED DATE - ignore what's in sheets
+                setAdminDate('15/01/2025');
                 
-                if (data.dateTimeSlots) {
-                  console.log('Setting dateTimeSlots to:', data.dateTimeSlots);
-                  setDateTimeSlots(data.dateTimeSlots);
+                if (data.timeSlots) {
+                  console.log('Setting timeSlots to:', data.timeSlots);
+                  setTimeSlots(data.timeSlots);
                 }
                 if (data.gdprText) {
                   console.log('Setting gdprText to:', data.gdprText);
@@ -130,21 +117,17 @@
               } else {
                 // No settings in sheet, use defaults
                 console.log('No settings in sheet, using defaults');
-                setAvailableDates(['22/01/2025']);
-                setSelectedDate('22/01/2025');
-                setAdminSelectedDate('22/01/2025');
-                setDateTimeSlots({'22/01/2025': {'09:00': 3, '09:30': 3, '10:00': 3, '14:00': 2, '14:30': 2}});
+                setAdminDate('15/01/2025');
+                setTimeSlots({'09:00': 3, '09:30': 3, '10:00': 3, '14:00': 2, '14:30': 2});
                 setGdprText('Αποδέχομαι τους όρους GDPR');
               }
               setSettingsLoaded(true);
             } catch (error) {
               console.error('Error loading settings:', error);
               // Use defaults on error
-              setAvailableDates(['22/01/2025']);
-              setSelectedDate('22/01/2025');
-              setAdminSelectedDate('22/01/2025');
-              setDateTimeSlots({'22/01/2025': {'09:00': 3, '09:30': 3, '10:00': 3, '14:00': 2, '14:30': 2}});
-              setGdprText('Δηλώνω την σαφή και ανεπιφύλακτη συγκατάθεση μου στην Ειρήνη Τουρλεντέ του Παναγιώτη (So Ham - Yoga & Pranic Healing) για τη συλλογή, τήρηση κι επεξεργασία των ανωτέρω δεδομένων μου, για την προς εμένα αποστολή ενημερωτικού mail με επιλεγμένες εκδηλώσεις και διδακτικά σεμινάρια του. Δηλώνω, επίσης, ότι ενημερώθηκα για την ύπαρξη δικαιώματος ανάκλησης της ως άνω χορηγηθείσας συγκατάθεσής μου ή διόρθωσης αυτών με την αποστολή αντίστοιχου mail στην ηλεκτρονική διεύθυνση sohamgreece@gmail.com Τα ως άνω δεδομένα θα διατηρηθούν μέχρι την ρητή ανάκληση της συγκατάθεσης.Υπάρχει δικαίωμα υποβολής καταγγελίας στην αρμόδια εποπτική αρχή. Υπεύθυνος επεξεργασίας: Ειρήνη Τουρλεντέ του Παναγιώτη (So Ham - Yoga & Pranic Healing).');
+              setAdminDate('15/01/2025');
+              setTimeSlots({'09:00': 3, '09:30': 3, '10:00': 3, '14:00': 2, '14:30': 2});
+              setGdprText('Αποδέχομαι τους όρους GDPR');
               setSettingsLoaded(true);
             }
           };
@@ -166,8 +149,8 @@
                 },
                 body: JSON.stringify({
                   action: 'saveSettings',
-                  availableDates: availableDates,
-                  dateTimeSlots: dateTimeSlots,
+                  adminDate: '15/01/2025', // FIXED DATE - always save this
+                  timeSlots: timeSlots,
                   gdprText: gdprText
                 })
               });
@@ -177,40 +160,6 @@
               alert('Error saving settings');
             } finally {
               setSavingSettings(false);
-            }
-          };
-
-          const handleAddDate = () => {
-            if (newDate && !availableDates.includes(newDate)) {
-              setAvailableDates([...availableDates, newDate].sort());
-              // Initialize with default time slots
-              setDateTimeSlots({
-                ...dateTimeSlots,
-                [newDate]: {'09:00': 3, '10:00': 3}
-              });
-              setNewDate('');
-            }
-          };
-
-          const handleRemoveDate = (date) => {
-            if (availableDates.length > 1) {
-              const newDates = availableDates.filter(d => d !== date);
-              setAvailableDates(newDates);
-              
-              // Remove time slots for this date
-              const newDateTimeSlots = {...dateTimeSlots};
-              delete newDateTimeSlots[date];
-              setDateTimeSlots(newDateTimeSlots);
-              
-              // Update selected dates if needed
-              if (selectedDate === date) {
-                setSelectedDate(newDates[0]);
-              }
-              if (adminSelectedDate === date) {
-                setAdminSelectedDate(newDates[0]);
-              }
-            } else {
-              alert('You must have at least one date available');
             }
           };
 
@@ -229,18 +178,14 @@
           const getAvailableSlots = () => {
             const available = [];
             console.log('=== CALCULATING AVAILABLE SLOTS ===');
-            console.log('Selected Date:', selectedDate);
-            console.log('Date Time Slots:', dateTimeSlots);
+            console.log('Admin Date:', adminDate);
+            console.log('Time Slots:', timeSlots);
             console.log('All Reservations:', reservations);
-            
-            // Get time slots for the selected date
-            const timeSlots = dateTimeSlots[selectedDate] || {};
-            console.log('Time slots for this date:', timeSlots);
             
             // Filter reservations for this specific date
             const reservationsForDate = reservations.filter(res => {
-              const match = res.date === selectedDate;
-              console.log(`Reservation: ${res.firstName} ${res.lastName} - Date: "${res.date}" vs Selected: "${selectedDate}" - Match: ${match}`);
+              const match = res.date === adminDate;
+              console.log(`Reservation: ${res.firstName} ${res.lastName} - Date: "${res.date}" vs Admin: "${adminDate}" - Match: ${match}`);
               return match;
             });
             
@@ -268,7 +213,7 @@
           const handleSubmit = async () => {
             const fullName = `${formData.firstName} ${formData.lastName}`.trim();
             
-            if (selectedDate && selectedTime && fullName && formData.email && gdprAccepted) {
+            if (adminDate && selectedTime && fullName && formData.email && gdprAccepted) {
               if (GOOGLE_SHEETS_URL === "YOUR_WEB_APP_URL_HERE") {
                 alert("Admin needs to configure Google Sheets URL");
                 return;
@@ -290,7 +235,7 @@
                     lastName: formData.lastName,
                     email: formData.email,
                     phone: formData.phone,
-                    date: selectedDate, // Send as dd/MM/yyyy
+                    date: adminDate, // Send as dd/MM/yyyy
                     time: selectedTime
                   })
                 });
@@ -346,44 +291,26 @@
           };
 
           const handleAddTimeSlot = () => {
-            if (newSlotTime && adminSelectedDate) {
-              const currentSlots = dateTimeSlots[adminSelectedDate] || {};
-              if (!currentSlots[newSlotTime]) {
-                setDateTimeSlots({
-                  ...dateTimeSlots,
-                  [adminSelectedDate]: {
-                    ...currentSlots,
-                    [newSlotTime]: 3
-                  }
-                });
-                setNewSlotTime('');
-              }
+            if (newSlotTime && !timeSlots[newSlotTime]) {
+              setTimeSlots({
+                ...timeSlots,
+                [newSlotTime]: 3
+              });
+              setNewSlotTime('');
             }
           };
 
           const handleRemoveTimeSlot = (time) => {
-            if (adminSelectedDate) {
-              const currentSlots = {...dateTimeSlots[adminSelectedDate]};
-              delete currentSlots[time];
-              setDateTimeSlots({
-                ...dateTimeSlots,
-                [adminSelectedDate]: currentSlots
-              });
-            }
+            const { [time]: _, ...rest } = timeSlots;
+            setTimeSlots(rest);
           };
 
           const handleUpdateCapacity = (time, change) => {
-            if (adminSelectedDate) {
-              const currentSlots = dateTimeSlots[adminSelectedDate] || {};
-              const newCapacity = Math.max(1, (currentSlots[time] || 0) + change);
-              setDateTimeSlots({
-                ...dateTimeSlots,
-                [adminSelectedDate]: {
-                  ...currentSlots,
-                  [time]: newCapacity
-                }
-              });
-            }
+            const newCapacity = Math.max(1, timeSlots[time] + change);
+            setTimeSlots({
+              ...timeSlots,
+              [time]: newCapacity
+            });
           };
 
           const handleAdminToggle = () => {
@@ -423,10 +350,8 @@
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                   <div className={showAdmin ? 'lg:col-span-2' : ''}>
                     <div className="bg-white rounded-lg shadow-lg p-8">
-                      <h1 className="text-3xl font-bold text-gray-800 mb-2">Κλείστε μία δωρεάν δοκιμαστική θεραπεία Pranic Healing</h1>
-                      <p className="text-gray-600 mb-6">Επιλέξτε ημερομηνία και ώρα</p>
-                        <p className="text-gray-600 mb-6">Παρακαλώ βεβαιωθείτε πως τα στοιχεία επικοινωνίας είναι σωστά</p>
-                        <p className="text-gray-600 mb-6">Εάν κάτι δεν εμφανβίζεται σωστά, παρακαλώ επαναφορτώστε τη σελίδα</p>
+                      <h1 className="text-3xl font-bold text-gray-800 mb-2">Κλείστε μία δωρεάν θεραπεία Pranic Healing</h1>
+                      <p className="text-gray-600 mb-6"> </p>
 
                       {submitted ? (
                         <div className="bg-green-50 border border-green-200 rounded-lg p-4 text-center">
@@ -494,31 +419,16 @@
                             <label className="flex items-center text-sm font-semibold text-gray-700 mb-2">
                               Ημερομηνία
                             </label>
-                            {availableDates.length > 0 ? (
-                              <select
-                                value={selectedDate}
-                                onChange={(e) => {
-                                  setSelectedDate(e.target.value);
-                                  setSelectedTime('');
-                                }}
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
-                              >
-                                {availableDates.map(date => (
-                                  <option key={date} value={date}>{date}</option>
-                                ))}
-                              </select>
-                            ) : (
-                              <div className="bg-gray-100 px-4 py-2 rounded-lg text-gray-700 font-medium">
-                                No dates available
-                              </div>
-                            )}
+                            <div className="bg-gray-100 px-4 py-2 rounded-lg text-gray-700 font-medium">
+                              {adminDate || 'No date set'}
+                            </div>
                           </div>
 
                           <div>
                             <label className="flex items-center text-sm font-semibold text-gray-700 mb-2">
                               Ώρα
                             </label>
-                            {selectedDate && Object.keys(dateTimeSlots[selectedDate] || {}).length > 0 ? (
+                            {adminDate && Object.keys(timeSlots).length > 0 ? (
                               availableSlots.length > 0 ? (
                                 <div className="grid grid-cols-2 gap-2">
                                   {availableSlots.map(slot => (
@@ -558,7 +468,7 @@
 
                           <button
                             onClick={handleSubmit}
-                            disabled={!selectedDate || !selectedTime || !formData.firstName || !formData.lastName || !formData.email || !gdprAccepted || loading}
+                            disabled={!adminDate || !selectedTime || !formData.firstName || !formData.lastName || !formData.email || !gdprAccepted || loading}
                             className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-400 text-white font-semibold py-3 rounded-lg transition-colors duration-200"
                           >
                             {loading ? 'Επεξεργασία...' : 'Επιβεβαίωση Κράτησης'}
@@ -575,39 +485,12 @@
 
                         <div className="mb-6 pb-6 border-b border-gray-200">
                           <label className="text-sm font-semibold text-gray-700 mb-2 block">
-                            Available Dates
+                            Booking Date (Fixed)
                           </label>
-                          <div className="space-y-2 mb-3 max-h-40 overflow-y-auto">
-                            {availableDates.map(date => (
-                              <div key={date} className="flex items-center justify-between bg-gray-50 p-2 rounded">
-                                <span className="text-sm font-medium text-gray-700">{date}</span>
-                                <button
-                                  onClick={() => handleRemoveDate(date)}
-                                  className="p-1 bg-red-100 hover:bg-red-200 text-red-600 rounded"
-                                  disabled={availableDates.length === 1}
-                                >
-                                  ×
-                                </button>
-                              </div>
-                            ))}
+                          <div className="bg-gray-100 px-3 py-2 rounded-lg text-gray-700 font-medium text-sm">
+                            15/01/2025
                           </div>
-
-                          <div className="flex gap-2 mt-3">
-                            <input
-                              type="date"
-                              value={toISOFormat(newDate)}
-                              onChange={(e) => setNewDate(toDisplayFormat(e.target.value))}
-                              className="flex-1 px-2 py-1 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
-                            />
-                            <button
-                              onClick={handleAddDate}
-                              disabled={!newDate || availableDates.includes(newDate)}
-                              className="px-3 py-1 bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-400 text-white rounded text-sm font-medium transition-colors"
-                            >
-                              Add
-                            </button>
-                          </div>
-                          <p className="text-xs text-gray-500 mt-2">Visitors can choose from these dates</p>
+                          <p className="text-xs text-gray-500 mt-1">Date is fixed and cannot be changed</p>
                         </div>
 
                         <div className="mb-6 pb-6 border-b border-gray-200">
@@ -624,22 +507,9 @@
                         </div>
 
                         <div className="mb-6 pb-6 border-b border-gray-200">
-                          <h3 className="font-semibold text-gray-800 mb-3 text-sm">Manage Time Slots</h3>
-                          <label className="text-xs font-semibold text-gray-600 mb-2 block">
-                            Select Date to Edit:
-                          </label>
-                          <select
-                            value={adminSelectedDate}
-                            onChange={(e) => setAdminSelectedDate(e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm mb-3 focus:ring-2 focus:ring-indigo-500 outline-none"
-                          >
-                            {availableDates.map(date => (
-                              <option key={date} value={date}>{date}</option>
-                            ))}
-                          </select>
-                          
+                          <h3 className="font-semibold text-gray-800 mb-3 text-sm">Time Slots</h3>
                           <div className="space-y-2 mb-3 max-h-40 overflow-y-auto">
-                            {Object.keys(dateTimeSlots[adminSelectedDate] || {})
+                            {Object.keys(timeSlots)
                               .sort()
                               .map(time => (
                                 <div key={time} className="flex items-center justify-between bg-gray-50 p-2 rounded">
@@ -652,7 +522,7 @@
                                       -
                                     </button>
                                     <span className="text-sm font-semibold text-gray-700 w-6 text-center">
-                                      {dateTimeSlots[adminSelectedDate][time]}
+                                      {timeSlots[time]}
                                     </span>
                                     <button
                                       onClick={() => handleUpdateCapacity(time, 1)}
@@ -680,13 +550,12 @@
                             />
                             <button
                               onClick={handleAddTimeSlot}
-                              disabled={!newSlotTime || (dateTimeSlots[adminSelectedDate] && dateTimeSlots[adminSelectedDate][newSlotTime])}
+                              disabled={!newSlotTime || timeSlots[newSlotTime]}
                               className="px-3 py-1 bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-400 text-white rounded text-sm font-medium transition-colors"
                             >
                               Add
                             </button>
                           </div>
-                          <p className="text-xs text-gray-500 mt-2">Time slots for {adminSelectedDate}</p>
                         </div>
 
                         {/* Save Settings Button */}
